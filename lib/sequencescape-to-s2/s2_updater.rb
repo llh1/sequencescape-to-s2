@@ -18,7 +18,7 @@ module SequencescapeToS2
         objects.each do |uuid, resource|
           session << resource
 
-          unless existing_uuid?(uuid, session)
+          if existing_uuid?(uuid, session)
             raise ExistingResource, "The resource '#{resource.class}' already exists in S2 with the uuid '#{uuid}'."
           end
 
