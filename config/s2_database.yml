@@ -1,0 +1,22 @@
+laboratory-app: &laboratory
+  adapter: mysql2
+  user: 'root'
+  password: 'root'
+  host: localhost
+  port: 3306
+  database: laboratory_development
+
+management-app: &management
+  adapter: mysql2
+  user: 'root'
+  password: 'root'
+  host: localhost
+  port: 3306
+  database: management_development
+
+development:
+  laboratory-app:
+    <<: *laboratory
+  management-app:
+    <<: *management
+

@@ -1,0 +1,18 @@
+mysql: &MYSQL
+  adapter: mysql2
+  user: 'root'
+  password: 'root'
+  host: localhost
+  port: 3306
+  
+development:
+  <<: *MYSQL
+  database: sequencescape_development
+
+test:
+  adapter: sqlite
+  database: test.db
+
+production:
+  <<: *MYSQL
+  database: sequencescape_development
