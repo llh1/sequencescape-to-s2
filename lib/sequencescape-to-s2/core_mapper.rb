@@ -31,7 +31,7 @@ module SequencescapeToS2
         labellable_uuid = SecureRandom.uuid 
         objects[labellable_uuid] = labellable
 
-        load_aliquots(plate, plate_id).tap do |samples|
+        set_aliquots(plate, plate_id).tap do |samples|
           samples.each do |sample_uuid, sample|
             objects[sample_uuid] = sample
           end
@@ -121,7 +121,7 @@ module SequencescapeToS2
     # @param [Lims::LaboratoryApp::Laboratory::Plate] plate
     # @param [Integer] plate_id
     # @return [Hash]
-    def load_aliquots(plate, plate_id)
+    def set_aliquots(plate, plate_id)
       aliquots_data = load_aliquots_data_by_plate_id(plate_id)
       {}.tap do |samples|
         count = 1
