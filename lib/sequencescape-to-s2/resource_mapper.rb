@@ -4,8 +4,6 @@ require 'lims-laboratory-app/labels/labellable'
 require 'lims-laboratory-app/labels/sanger_barcode'
 require 'lims-management-app/sample/sample'
 require 'securerandom'
-require 'rubygems'
-require 'ruby-debug/debugger'
 
 module SequencescapeToS2
   module ResourceMapper
