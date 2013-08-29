@@ -21,7 +21,6 @@ module SequencescapeToS2
     # @param [Array] uuids
     # @return [Array]
     def encode_for_store(store, uuids)
-      url_generator = lambda { |u| u }
       context = Lims::Api::Context.new(store, nil, nil, url_generator)
 
       [].tap do |encoded_resources|
@@ -36,6 +35,11 @@ module SequencescapeToS2
           end
         end
       end
+    end
+
+    # TODO: improve to get the right url depending on the application url
+    def url_generator
+      lambda { |u| u }
     end
   end
 end
