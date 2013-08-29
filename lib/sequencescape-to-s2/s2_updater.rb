@@ -14,7 +14,14 @@ module SequencescapeToS2
 
     # @param [Hash] objects
     def create_plate_objects(objects)
-      laboratory_store.with_session do |session|
+      create_in_store(laboratory_store, objects[:laboratory])
+      create_in_store(management_store, objects[:management])
+    end
+
+    # @param [Lims::Core::Persistence::Sequel::Store] store
+    # @param [Hash] objects
+    def create_in_store(store, objects)
+      store.with_session do |session|
         objects.each do |uuid, resource|
           session << resource
 
