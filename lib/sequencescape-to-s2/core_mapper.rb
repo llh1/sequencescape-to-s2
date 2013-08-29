@@ -1,6 +1,9 @@
 require 'lims-core'
 require 'lims-laboratory-app/laboratory/plate'
+require 'lims-laboratory-app/labels/labellable'
+require 'lims-laboratory-app/labels/sanger_barcode'
 require 'lims-management-app/sample/sample'
+require 'securerandom'
 
 module SequencescapeToS2
   module CoreMapper
@@ -20,8 +23,13 @@ module SequencescapeToS2
       {}.tap do |objects|
         plate_id = plate_id_by_uuid(plate_uuid)          
 
-        plate = create_empty_plate(plate_id)
+        plate_data = load_plate_data_by_plate_id(plate_id)
+        plate = create_empty_plate(plate_data[:size])
         objects[plate_uuid] = plate
+
+        labellable = create_labellable(plate_uuid, plate_data[:prefix], plate_data[:barcode])
+        labellable_uuid = SecureRandom.uuid 
+        objects[labellable_uuid] = labellable
 
         load_aliquots(plate, plate_id).tap do |samples|
           samples.each do |sample_uuid, sample|
@@ -46,14 +54,30 @@ module SequencescapeToS2
 
     # @param [Integer] plate_id
     # @return [Lims::LaboratoryApp::Laboratory::Plate]
-    def create_empty_plate(plate_id)
-      plate_row = sequencescape_db[:assets].where(:id => plate_id).first
-      dimensions = asset_size_to_row_column(plate_row[:size])
-
+    def create_empty_plate(size)
+      dimensions = asset_size_to_row_column(size)
       Lims::LaboratoryApp::Laboratory::Plate.new({
         :number_of_rows => dimensions[:number_of_rows], 
         :number_of_columns => dimensions[:number_of_columns]
       })
+    end
+
+    # @param [String] plate_uuid
+    # @param [String] prefix
+    # @param [String] barcode
+    # @return [Lims::LaboratoryApp::Laboratory::Labellable]
+    # TODO: concat prefix and barcode doesn't give the sanger barcode
+    # There is still the last caracter to add. From where?
+    def create_labellable(plate_uuid, prefix, barcode)
+      Lims::LaboratoryApp::Labels::Labellable.new({
+        :name => plate_uuid,
+        :type => 'resource'
+      }).tap do |l|
+        l["sanger label"] = Lims::LaboratoryApp::Labels::Labellable::Label.new({
+          :type => Lims::LaboratoryApp::Labels::SangerBarcode::Type,
+          :value => "#{prefix}#{barcode}"
+        })
+      end
     end
 
     # @param [Integer] size
@@ -63,6 +87,14 @@ module SequencescapeToS2
       when 96 then {:number_of_rows => 8, :number_of_columns => 12}
       else raise UnknownPlateSize, "The plate size #{size} cannot be translated into number of rows and number of columns."
       end
+    end
+
+    # @param [Integer] plate_id
+    # @return [Hash]
+    def load_plate_data_by_plate_id(plate_id)
+      sequencescape_db[:assets].left_outer_join(
+        :barcode_prefixes, :id => :barcode_prefix_id
+      ).where(:assets__id => plate_id).first
     end
 
     # @param [Integer] plate_id

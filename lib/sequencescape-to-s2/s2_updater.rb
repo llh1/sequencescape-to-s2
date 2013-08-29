@@ -4,8 +4,8 @@ require 'lims-core/persistence/sequel/store'
 require 'lims-core/persistence/sequel/persistor'
 require 'lims-core/persistence/sequel/session'
 require 'lims-core/persistence/session'
-require 'lims-laboratory-app/laboratory/plate'
 require 'lims-laboratory-app/laboratory/plate/plate_sequel_persistor'
+require 'lims-laboratory-app/labels/labellable/labellable_sequel_persistor'
 
 module SequencescapeToS2
   module S2Updater
