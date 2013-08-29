@@ -17,16 +17,16 @@ module SequencescapeToS2
     attribute :laboratory_store, Lims::Core::Persistence::Sequel::Store, :required => true, :writer => :private
     attribute :management_store, Lims::Core::Persistence::Sequel::Store, :required => true, :writer => :private
 
-    def initialize(sequencescape_settings, s2_laboratory_settings, s2_management_settings)
+    def initialize(sequencescape_settings, s2_laboratory_settings, s2_management_settings, amqp_settings)
       setup_sequencescape_db(sequencescape_settings)
       setup_s2_stores(s2_laboratory_settings, s2_management_settings)
+      setup_message_bus(amqp_settings)
     end
 
     def copy_plate_in_s2(plate_uuid)
       objects = load_plate_objects(plate_uuid)
       create_plate_objects(objects)
       encoded_objects = encode(objects)            
-      debugger
       publish(encoded_objects)
     end
 
