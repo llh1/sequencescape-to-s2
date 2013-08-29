@@ -6,7 +6,7 @@ require 'lims-management-app/sample/sample'
 require 'securerandom'
 
 module SequencescapeToS2
-  module CoreMapper
+  module ResourceMapper
 
     PLATE_TYPE = "Plate"
     SAMPLE_TYPE = "Sample"

@@ -1,4 +1,4 @@
-require 'sequencescape-to-s2/core_mapper'
+require 'sequencescape-to-s2/resource_mapper'
 require 'sequencescape-to-s2/s2_updater'
 require 'sequel/adapters/mysql2'
 
@@ -6,7 +6,7 @@ module SequencescapeToS2
   class PlateManager
     include Virtus
     include Aequitas
-    include CoreMapper 
+    include ResourceMapper 
     include S2Updater
 
     attribute :sequencescape_db, Sequel::Mysql2::Database, :required => true, :writer => :private
