@@ -3,6 +3,7 @@ source "http://www.rubygems.org"
 gemspec
 
 gem 'lims-core', '~>2.3', :git => 'http://github.com/sanger/lims-core.git' , :branch => 'development'
+gem 'lims-api', '~>2.4', :git => 'http://github.com/sanger/lims-api.git' , :branch => 'master'
 gem 'lims-laboratory-app', '~>1.9', :git => 'http://github.com/sanger/lims-laboratory-app.git' , :branch => 'development'
 gem 'lims-management-app', '~>1.7', :git => 'https://github.com/sanger/lims-management-app.git', :branch => 'development'
 

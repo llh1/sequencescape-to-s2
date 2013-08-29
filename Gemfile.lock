@@ -1,4 +1,16 @@
 GIT
+  remote: http://github.com/sanger/lims-api.git
+  revision: 2d3bd76c5a930d5d2f0645770dff837c344562b4
+  branch: master
+  specs:
+    lims-api (2.4.0)
+      active_support
+      bunny (= 0.9.0.pre10)
+      json
+      sequel
+      state_machine
+
+GIT
   remote: http://github.com/sanger/lims-core.git
   revision: e97b060910df42ef1be3c2094612ad5f5827474e
   branch: development
@@ -105,6 +117,7 @@ PLATFORMS
 DEPENDENCIES
   debugger
   debugger-completion
+  lims-api (~> 2.4)!
   lims-core (~> 2.3)!
   lims-laboratory-app (~> 1.9)!
   lims-management-app (~> 1.7)!
