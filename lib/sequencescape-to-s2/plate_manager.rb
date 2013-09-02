@@ -17,12 +17,19 @@ module SequencescapeToS2
     attribute :laboratory_store, Lims::Core::Persistence::Sequel::Store, :required => true, :writer => :private
     attribute :management_store, Lims::Core::Persistence::Sequel::Store, :required => true, :writer => :private
 
-    def initialize(sequencescape_settings, s2_laboratory_settings, s2_management_settings, amqp_settings)
+    # @param [Hash] sequencescape_settings
+    # @param [Hash] s2_laboratory_settings
+    # @param [Hash] s2_management_settings
+    # @param [Hash] amqp_settings
+    # @param [Hash] api_settings
+    def initialize(sequencescape_settings, s2_laboratory_settings, s2_management_settings, amqp_settings, api_settings)
       setup_sequencescape_db(sequencescape_settings)
       setup_s2_stores(s2_laboratory_settings, s2_management_settings)
       setup_message_bus(amqp_settings)
+      setup_api_roots(api_settings)
     end
 
+    # @param [String] plate_uuid
     def copy_plate_in_s2(plate_uuid)
       objects = load_plate_objects(plate_uuid)
       create_plate_objects(objects)
@@ -32,10 +39,13 @@ module SequencescapeToS2
 
     private
 
+    # @param [Hash] settings
     def setup_sequencescape_db(settings)
       @sequencescape_db = Sequel.connect(settings)
     end
 
+    # @param [Hash] laboratory_settings
+    # @param [Hash] management_settings
     def setup_s2_stores(laboratory_settings, management_settings)
       @laboratory_store = Lims::Core::Persistence::Sequel::Store.new(Sequel.connect(laboratory_settings))
       @management_store = Lims::Core::Persistence::Sequel::Store.new(Sequel.connect(management_settings))
