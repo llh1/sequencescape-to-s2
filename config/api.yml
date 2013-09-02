@@ -1,0 +1,12 @@
+default: &default
+  laboratory_app_root: 'http://localhost:9292' 
+  management_app_root: 'http://localhost:9292'
+
+development:
+  <<: *default
+
+test:
+  <<: *default
+
+production:
+  <<: *default
