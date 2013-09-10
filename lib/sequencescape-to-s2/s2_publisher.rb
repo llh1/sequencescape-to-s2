@@ -21,7 +21,7 @@ module SequencescapeToS2
       "sequencescapetos2.#{object.keys.first}.create"
     end
 
-    def setup_message_bus(settings)
+    def setup_message_bus_for_publication(settings)
       @bus = Lims::Core::Persistence::MessageBus.new(settings).tap do |b|
         b.set_message_persistence(settings["message_persistence"])
         b.connect
