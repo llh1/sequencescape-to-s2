@@ -12,10 +12,10 @@ GIT
 
 GIT
   remote: http://github.com/sanger/lims-core.git
-  revision: e97b060910df42ef1be3c2094612ad5f5827474e
-  branch: development
+  revision: 60a5694a1834d5a6c4bd7e7591c7097b73bc93c9
+  branch: master
   specs:
-    lims-core (2.3.0.1.0)
+    lims-core (2.5.0)
       active_support
       aequitas
       bunny (= 0.9.0.pre10)
@@ -28,10 +28,10 @@ GIT
 
 GIT
   remote: http://github.com/sanger/lims-laboratory-app.git
-  revision: 9b8ed2328eaa74d6b8f0051a06f1eedd0d40b3b6
-  branch: development
+  revision: 86527e20ac95b9d714e13c5ac33c6c715dd3813e
+  branch: master
   specs:
-    lims-laboratory-app (1.9.1)
+    lims-laboratory-app (1.8.1)
 
 GIT
   remote: http://github.com/sanger/psd_logger.git
@@ -41,17 +41,17 @@ GIT
 
 GIT
   remote: https://github.com/sanger/lims-management-app.git
-  revision: ee3e8970f022d583f8597492154c58536ad12f93
-  branch: development
+  revision: 17264b6dbe832a6492256201a5afe5afbdd9095e
+  branch: master
   specs:
-    lims-management-app (1.7.0)
+    lims-management-app (1.8.2)
       bunny (= 0.9.0.pre10)
       json
 
 PATH
   remote: .
   specs:
-    sequencescape-to-s2 (0.1.0)
+    sequencescape-to-s2 (0.2.0)
       aequitas
       facets
       sequel
@@ -118,9 +118,9 @@ DEPENDENCIES
   debugger
   debugger-completion
   lims-api (~> 2.4)!
-  lims-core (~> 2.3)!
-  lims-laboratory-app (~> 1.9)!
-  lims-management-app (~> 1.7)!
+  lims-core (~> 2.5)!
+  lims-laboratory-app (~> 1.8)!
+  lims-management-app (~> 1.8)!
   mysql2
   psd_logger!
   rake
