@@ -1,13 +1,32 @@
-defaults: &defaults
+reception: &reception
+  url: "amqp://localhost:5672"
+  exchange_name: "psd.plate_uuids"
+  queue_name: "psd.plate_uuids.uuids"
+  durable: true
+  message_persistent: true
+  prefetch_number: 1
+  empty_queue_disconnect_interval: 0
+  message_timeout: 120
+
+publication: &publication
   url: "amqp://localhost:5672"
   exchange_name: "psd.s2"
   durable: true
   message_persistent: true
   prefetch_number: 1
 
+default: &default
+  message_reception:
+    <<: *reception
+  message_publication:
+    <<: *publication
+
 test:
-  <<: *defaults
+  <<: *default
 
 development:
-  <<: *defaults
+  <<: *default
+
+production:
+  <<: *default
 
