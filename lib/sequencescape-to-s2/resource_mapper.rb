@@ -1,8 +1,12 @@
 require 'lims-core'
+require 'lims-core/actions/action'
 require 'lims-laboratory-app/laboratory/plate'
 require 'lims-laboratory-app/labels/labellable'
 require 'lims-laboratory-app/labels/sanger_barcode'
 require 'lims-management-app/sample/sample'
+require 'lims-management-app/sample/dna/dna'
+require 'lims-management-app/sample/cellular_material/cellular_material'
+require 'lims-management-app/sample/genotyping/genotyping'
 require 'securerandom'
 
 module SequencescapeToS2
@@ -23,14 +27,17 @@ module SequencescapeToS2
       {:laboratory => {}, :management => {}}.tap do |objects|
         plate_id = plate_id_by_uuid(plate_uuid)          
 
+        # Load plate
         plate_data = load_plate_data_by_plate_id(plate_id)
         plate = create_empty_plate(plate_data[:size])
         objects[:laboratory][plate_uuid] = plate
 
+        # Load labellable
         labellable = create_labellable(plate_uuid, plate_data[:prefix], plate_data[:barcode])
         labellable_uuid = SecureRandom.uuid 
         objects[:laboratory][labellable_uuid] = labellable
 
+        # Load aliquots
         aliquots_data = load_aliquots_data_by_plate_id(plate_id)
         set_aliquots(plate, aliquots_data).tap do |samples|
           samples.each do |sample_uuid, sample|
@@ -38,6 +45,7 @@ module SequencescapeToS2
           end
         end
 
+        # Load samples
         sample_ids = aliquots_data.inject([]) { |m,e| m << e[:sample_id] }
         samples = create_samples(sample_ids)
         samples.each do |sample_uuid, sample|
@@ -93,7 +101,49 @@ module SequencescapeToS2
       {}.tap do |samples|
         sample_data = load_sample_data_by_sample_ids(sample_ids)
         sample_data.each do |row|
-          # TODO
+          sample = Lims::ManagementApp::Sample.new({
+            :sanger_sample_id => row[:sanger_sample_id],
+            :is_sample_a_control => row[:control],
+            :gc_content => row[:gc_content],
+            :gender => row[:gender],
+            :sample_source => row[:dna_source],
+            :volume => row[:volume],
+            :mother => row[:mother],
+            :father => row[:father],
+            :public_name => row[:sample_public_name],
+            :scientific_name => row[:sample_common_name],
+            :taxon_id => row[:sample_taxon_id],
+            :ebi_accession_number => row[:sample_ebi_accession_number],
+            :sibling => row[:sibling],
+            :is_resubmitted_sample => row[:is_resubmitted],
+            :date_of_sample_collection => row[:date_of_sample_collection],
+            :sample_type => row[:sample_type],
+            :storage_conditions => row[:sample_storage_conditions],
+            :supplier_sample_name => row[:supplier_name]
+          })
+
+          dna = Lims::ManagementApp::Sample::Dna.new({
+            :date_of_sample_extraction => row[:date_of_sample_extraction],
+            :extraction_method => row[:sample_extraction_method],
+            :sample_purified => row[:sample_purified],
+            :concentration => row[:concentration],
+            :concentration_determined_by_which_method => row[:concentration_determined_by]
+          })
+          sample.dna = dna
+
+          cellular_material = Lims::ManagementApp::Sample::CellularMaterial.new({
+            :donor_id => row[:cohort]
+          })
+          sample.cellular_material = cellular_material
+
+          genotyping = Lims::ManagementApp::Sample::Genotyping.new({
+            :country_of_origin => row[:country_of_origin],
+            :geographical_region => row[:geographical_region],
+            :ethnicity => row[:ethnicity]
+          })
+          sample.genotyping = genotyping
+
+          samples[row[:external_id]] = sample
         end
       end
     end
